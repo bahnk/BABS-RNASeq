@@ -1,0 +1,9 @@
+
+species: Homo sapiens
+type: random
+genome_version: GRCh38
+genome_release: 86
+strandedness: none
+#design: assets/examples/designs/single_end.csv
+design: assets/examples/designs/paired_end.csv
+

@@ -1,0 +1,318 @@
+digraph "dag" {
+p0 [shape=point,label="",fixedsize=true,width=0.1,xlabel="Channel.from"];
+p1 [label="fastq_merge"];
+p0 -> p1 [label="SAMPLES"];
+
+p1 [label="fastq_merge"];
+p2 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p1 -> p2;
+
+p2 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p3 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p2 -> p3;
+
+p3 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p4 [label="read_length"];
+p3 -> p4 [label="MERGED_FASTQ"];
+
+p4 [label="read_length"];
+p5 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p4 -> p5;
+
+p5 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p6 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p5 -> p6;
+
+p6 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p7 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p6 -> p7;
+
+p7 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p8 [label="fastqc"];
+p7 -> p8 [label="FASTQ"];
+
+p8 [label="fastqc"];
+p9 [shape=point];
+p8 -> p9;
+
+p7 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p10 [label="cutadapt"];
+p7 -> p10 [label="FASTQ"];
+
+p10 [label="cutadapt"];
+p11 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p10 -> p11;
+
+p10 [label="cutadapt"];
+p74 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p10 -> p74;
+
+p11 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p12 [label="rsem"];
+p11 -> p12 [label="CUTADAPT"];
+
+p12 [label="rsem"];
+p14 [shape=point];
+p12 -> p14;
+
+p12 [label="rsem"];
+p13 [shape=point];
+p12 -> p13;
+
+p12 [label="rsem"];
+p16 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p12 -> p16;
+
+p12 [label="rsem"];
+p15 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p12 -> p15;
+
+p15 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p20 [label="rsem_md5"];
+p15 -> p20 [label="RSEM_RESULTS"];
+
+p16 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p23 [label="insert_size"];
+p16 -> p23 [label="RSEM_GENOME"];
+
+p7 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p17 [label="fastq_md5"];
+p7 -> p17 [label="FASTQ"];
+
+p17 [label="fastq_md5"];
+p18 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p17 -> p18;
+
+p18 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p19 [shape=point];
+p18 -> p19 [label="FASTQ_MD5"];
+
+p20 [label="rsem_md5"];
+p21 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p20 -> p21;
+
+p21 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p22 [shape=point];
+p21 -> p22 [label="RSEM_MD5"];
+
+p23 [label="insert_size"];
+p24 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p23 -> p24;
+
+p24 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p25 [shape=point];
+p24 -> p25 [label="INSERT_SIZE"];
+
+p16 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p26 [label="sort_index"];
+p16 -> p26 [label="RSEM_GENOME"];
+
+p26 [label="sort_index"];
+p27 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p26 -> p27;
+
+p27 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p28 [label="group"];
+p27 -> p28 [label="SORTED_RSEM"];
+
+p28 [label="group"];
+p29 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p28 -> p29;
+
+p29 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p30 [label="duplicates"];
+p29 -> p30 [label="GROUP"];
+
+p30 [label="duplicates"];
+p31 [shape=point];
+p30 -> p31;
+
+p30 [label="duplicates"];
+p32 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p30 -> p32;
+
+p32 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p33 [label="complexity"];
+p32 -> p33 [label="DUPLICATES"];
+
+p33 [label="complexity"];
+p34 [shape=point];
+p33 -> p34;
+
+p32 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p35 [label="rnaseqmetrics"];
+p32 -> p35 [label="DUPLICATES"];
+
+p35 [label="rnaseqmetrics"];
+p36 [shape=point];
+p35 -> p36;
+
+p32 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p37 [label="multimetrics"];
+p32 -> p37 [label="DUPLICATES"];
+
+p37 [label="multimetrics"];
+p39 [shape=point];
+p37 -> p39;
+
+p37 [label="multimetrics"];
+p38 [shape=point];
+p37 -> p38;
+
+p32 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p40 [label="infer_experiment"];
+p32 -> p40 [label="DUPLICATES"];
+
+p40 [label="infer_experiment"];
+p41 [shape=point];
+p40 -> p41;
+
+p32 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p42 [label="junction_annotation"];
+p32 -> p42 [label="DUPLICATES"];
+
+p42 [label="junction_annotation"];
+p43 [shape=point];
+p42 -> p43;
+
+p32 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p44 [label="junction_saturation"];
+p32 -> p44 [label="DUPLICATES"];
+
+p44 [label="junction_saturation"];
+p45 [shape=point];
+p44 -> p45;
+
+p32 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p46 [label="mismatch_profile"];
+p32 -> p46 [label="DUPLICATES"];
+
+p46 [label="mismatch_profile"];
+p47 [shape=point];
+p46 -> p47;
+
+p32 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p48 [label="read_distribution"];
+p32 -> p48 [label="DUPLICATES"];
+
+p48 [label="read_distribution"];
+p49 [shape=point];
+p48 -> p49;
+
+p32 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p50 [label="index"];
+p32 -> p50 [label="DUPLICATES"];
+
+p50 [label="index"];
+p51 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p50 -> p51;
+
+p51 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p52 [label="transcript_integrity_number"];
+p51 -> p52 [label="INDEXED_DUPLICATES"];
+
+p52 [label="transcript_integrity_number"];
+p53 [shape=point];
+p52 -> p53;
+
+p51 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p54 [label="rnaseqc"];
+p51 -> p54 [label="INDEXED_DUPLICATES"];
+
+p54 [label="rnaseqc"];
+p55 [shape=point];
+p54 -> p55;
+
+p15 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p56 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p15 -> p56 [label="RSEM_RESULTS"];
+
+p56 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p59 [label="build_matrix"];
+p56 -> p59;
+
+p57 [shape=point,label="",fixedsize=true,width=0.1];
+p59 [label="build_matrix"];
+p57 -> p59 [label="r_script_dir"];
+
+p58 [shape=point,label="",fixedsize=true,width=0.1];
+p59 [label="build_matrix"];
+p58 -> p59 [label="design_filepath"];
+
+p59 [label="build_matrix"];
+p62 [label="create_dds"];
+p59 -> p62;
+
+p59 [label="build_matrix"];
+p60 [shape=point];
+p59 -> p60;
+
+p61 [shape=point,label="",fixedsize=true,width=0.1];
+p62 [label="create_dds"];
+p61 -> p62 [label="r_script_dir"];
+
+p62 [label="create_dds"];
+p64 [label="create_vst"];
+p62 -> p64;
+
+p63 [shape=point,label="",fixedsize=true,width=0.1];
+p64 [label="create_vst"];
+p63 -> p64 [label="r_script_dir"];
+
+p64 [label="create_vst"];
+p69 [label="do_pca"];
+p64 -> p69;
+
+p62 [label="create_dds"];
+p66 [label="create_rlog"];
+p62 -> p66 [label="dds"];
+
+p65 [shape=point,label="",fixedsize=true,width=0.1];
+p66 [label="create_rlog"];
+p65 -> p66 [label="r_script_dir"];
+
+p66 [label="create_rlog"];
+p67 [shape=point];
+p66 -> p67;
+
+p68 [shape=point,label="",fixedsize=true,width=0.1];
+p69 [label="do_pca"];
+p68 -> p69 [label="r_script_dir"];
+
+p69 [label="do_pca"];
+p72 [label="pca_to_json"];
+p69 -> p72;
+
+p70 [shape=point,label="",fixedsize=true,width=0.1];
+p72 [label="pca_to_json"];
+p70 -> p72 [label="r_script_dir"];
+
+p71 [shape=point,label="",fixedsize=true,width=0.1];
+p72 [label="pca_to_json"];
+p71 -> p72 [label="design_filepath"];
+
+p72 [label="pca_to_json"];
+p73 [shape=point];
+p72 -> p73;
+
+p74 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p75 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p74 -> p75;
+
+p75 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p77 [label="multiqc"];
+p75 -> p77;
+
+p76 [shape=point,label="",fixedsize=true,width=0.1];
+p77 [label="multiqc"];
+p76 -> p77 [label="multiqc_conf"];
+
+p77 [label="multiqc"];
+p79 [shape=point];
+p77 -> p79;
+
+p77 [label="multiqc"];
+p78 [shape=point];
+p77 -> p78;
+
+}

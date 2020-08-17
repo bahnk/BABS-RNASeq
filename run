@@ -1,0 +1,10 @@
+#!/bin/sh
+
+module load Nextflow/20.07.1
+module load Singularity/3.4.2
+
+nextflow run main.nf \
+	-lib assets/asf.jar \
+	-params-file params.yml \
+	-resume
+

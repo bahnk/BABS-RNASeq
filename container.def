@@ -1,0 +1,199 @@
+
+Bootstrap: docker
+From: archlinux
+Stage: build
+
+%setup
+	touch /file1
+	touch ${SINGULARITY_ROOTFS}/file2
+
+%environment
+	
+	# PICARD
+	export EBROOTPICARD=/opt/picard
+	
+	# RNASEQC
+	export EBROOTRNAMINSEQC=/opt/rnaseqc
+
+%post
+
+	pacman -Sy
+
+	# required archlinux packages
+	pacman -S --noconfirm wget
+	pacman -S --noconfirm base-devel
+	pacman -S --noconfirm r
+	pacman -S --noconfirm gcc-fortran
+	pacman -S --noconfirm python
+	pacman -S --noconfirm python2
+	pacman -S --noconfirm python-pip
+	pacman -S --noconfirm python2-pip
+	pacman -S --noconfirm perl
+	pacman -S --noconfirm java-environment
+	pacman -S --noconfirm ttf-dejavu
+	pacman -S --noconfirm luajit
+	pacman -S --noconfirm bzip2
+	pacman -S --noconfirm curl
+	pacman -S --noconfirm xz
+	pacman -S --noconfirm cython
+	pacman -S --noconfirm cython2
+	pacman -S --noconfirm git
+	pacman -S --noconfirm awk
+
+	# install R packages
+	R -e 'install.packages("optparse", repo="https://cran.ma.imperial.ac.uk/")'
+	R -e 'install.packages("jsonlite", repo="https://cran.ma.imperial.ac.uk/")'
+	R -e 'install.packages("BiocManager", repo="https://cran.ma.imperial.ac.uk/")'
+	R -e 'install.packages("Rcpp", repo="https://cran.ma.imperial.ac.uk/")'
+	R -e 'install.packages("RcppArmadillo", repo="https://cran.ma.imperial.ac.uk/")'
+	R -e 'install.packages("BH", repo="https://cran.ma.imperial.ac.uk/")'
+	R -e 'BiocManager::install()'
+	R -e 'BiocManager::install("DESeq2")'
+	R -e 'BiocManager::install("BiocParallel")'
+	R -e 'BiocManager::install("rtracklayer")'
+	R -e 'BiocManager::install("SummarizedExperiment")'
+	R -e 'BiocManager::install("tximport")'
+
+	# minimal python
+	pip install numpy
+	pip install scipy
+	pip install pandas
+	pip install xlrd
+	pip install matplotlib
+	pip install matplotlib-venn
+	pip install plotly
+	pip install seaborn
+	pip install statsmodels
+	pip install scikit-learn
+	pip install scikit-image
+	pip install jinja2
+	pip install biopython
+	pip install urllib3
+	pip install lxml
+
+	############################################################################
+	###                               FASTQC                                 ###
+	############################################################################
+	echo "install FASTQC"
+	mkdir /opt/fastqc
+	wget \
+		https://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc_v0.11.8.zip \
+		-O /opt/fastqc/fastqc_v0.11.8.zip
+	unzip -d /opt/fastqc /opt/fastqc/fastqc_v0.11.8.zip
+	chmod 755 /opt/fastqc/FastQC/fastqc
+	ln -s /opt/fastqc/FastQC/fastqc /usr/bin/fastqc
+
+	############################################################################
+	###                             CUTADAPT                                 ###
+	############################################################################
+	echo "install CUTADAPT"
+	pip install cutadapt
+
+	############################################################################
+	###                               HTSLIB                                 ###
+	############################################################################
+	echo "install HTSLIB"
+	mkdir /opt/htslib
+	wget \
+		https://github.com/samtools/htslib/releases/download/1.9/htslib-1.9.tar.bz2 \
+		-O /opt/htslib/htslib-1.9.tar.bz2
+	cd /opt/htslib
+	bzip2 --decompress htslib-1.9.tar.bz2
+	tar xvf htslib-1.9.tar
+	cd htslib-1.9
+	./configure \
+		--prefix=/usr \
+		--enable-libcurl \
+		--enable-plugins \
+		--with-plugin-dir=/usr/lib/htslib/plugins
+	make
+	make install
+	cd /root
+
+	############################################################################
+	###                             SAMTOOLS                                 ###
+	############################################################################
+	echo "install SAMTOOLS"
+	mkdir /opt/samtools
+	wget \
+		https://github.com/samtools/samtools/releases/download/1.9/samtools-1.9.tar.bz2 \
+		-O /opt/samtools/samtools-1.9.tar.bz2
+	cd /opt/samtools
+	bzip2 --decompress samtools-1.9.tar.bz2
+	tar xvf samtools-1.9.tar
+	cd samtools-1.9
+	./configure --prefix=/usr --with-htslib=system
+	make
+	make install
+	cd /root
+
+	############################################################################
+	###                               STAR                                   ###
+	############################################################################
+	echo "install STAR"
+	mkdir /opt/star
+	wget \
+		https://github.com/alexdobin/STAR/archive/2.5.2a.tar.gz \
+		-O /opt/star/STAR_v2.5.2a.tar.gz
+	tar zxvf /opt/star/STAR_v2.5.2a.tar.gz --directory /opt/star
+	chmod 755 /opt/star/STAR-2.5.2a/bin/Linux_x86_64/STAR
+	ln -s /opt/star/STAR-2.5.2a/bin/Linux_x86_64/STAR /usr/bin/STAR
+
+	############################################################################
+	###                               RSEM                                   ###
+	############################################################################
+	echo "install RSEM"
+	mkdir /opt/rsem
+	wget \
+		https://github.com/deweylab/rsem/archive/v1.3.0.tar.gz \
+		-O /opt/rsem/RSEM_v1.3.0.tar.gz
+	tar zxvf /opt/rsem/RSEM_v1.3.0.tar.gz --directory /opt/rsem
+	cd /opt/rsem/RSEM-1.3.0
+	make
+   make install prefix="/opt/rsem"
+	cp -Rv /opt/rsem/bin/* /usr/bin
+	cd /root
+
+	############################################################################
+	###                               PICARD                                 ###
+	############################################################################
+	echo "install PICARD"
+	mkdir /opt/picard
+	wget \
+		https://github.com/broadinstitute/picard/releases/download/2.21.4/picard.jar \
+		-O /opt/picard/picard.jar
+
+	############################################################################
+	###                                RSEQC                                 ###
+	############################################################################
+	echo "install RSEQC"
+	pip install RSeQC
+
+	############################################################################
+	###                              RNASEQC                                 ###
+	############################################################################
+	echo "install RNASEQC"
+	mkdir /opt/rnaseqc
+	wget \
+		http://www.broadinstitute.org/cancer/cga/tools/rnaseqc/RNA-SeQC_v1.1.8.jar \
+		-O /opt/rnaseqc/RNA-SeQC_v1.1.8.jar
+
+	############################################################################
+	###                              MULTIQC                                 ###
+	############################################################################
+	echo "install MULTIQC"
+	pip install multiqc
+	pip install git+git://github.com/bahnk/BABS-MultiQC-RNASeq
+
+%runscript
+	echo "Container was created $NOW"
+	echo "Arguments received: $*"
+	exec echo "$@"
+
+%labels
+	Author nourdine.bah@crick.ac.uk
+	Version v0.0.1
+
+%help
+	This is a container used to analyse RNA-Seq data.
+
