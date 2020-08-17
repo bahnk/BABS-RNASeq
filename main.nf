@@ -8,10 +8,6 @@
  * philip.east chez crick.ac.uk
  */
 
-import java.nio.file.Paths
-
-import static groovy.io.FileType.FILES
-
 @Grab('com.xlson.groovycsv:groovycsv:1.3')
 import static com.xlson.groovycsv.CsvParser.parseCsv
 
@@ -19,78 +15,14 @@ import asf.Project
 import asf.Fastq
 import asf.Sample
 
-
 nextflow.enable.dsl=2
 
-///////////////////////////
-def absolute_path(path) {//
-///////////////////////////
-
-	def f = new File(path)
-
-	if ( ! f.isAbsolute() ) {
-		return Paths.get(workflow.projectDir.toString(), path).toString()
-	} else {
-		return path
-	}
-}
-
-//////////////////////////////////
-def addValue(dict, value, key) {//
-//////////////////////////////////
-	dict.put(key, value)
-	return [ dict , value ]
-}
-
-//////////////////////////////////
-def addFiles(dict, value, key) {//
-//////////////////////////////////
-
-	// test if it is a list of files
-	def exist = value.collect{ new File(it.toString()).exists() ? 0 : 1 }.sum()
-
-	if ( exist == 0 ) {
-
-		def sorted_value = value.sort{ it.getFileName() }
-		dict.put(key, sorted_value)
-
-		return [ dict , sorted_value ]
-
-	} else {
-
-		dict.put(key, value)
-
-		return [ dict , value ]
-	}
-}
-
-/////////////////////////////////////
-def addIndex(dict, bam, bai, key) {//
-/////////////////////////////////////
-	dict.put(key, [bam , bai])
-	return [ dict , bam , bai ]
-}
-
-//////////////////////////
-def rrlen(read_length) {//
-//////////////////////////
-
-	/* return rough read length for STAR */
-	
-	// three babs star indices have been built with these read length parameters
-	def starIndexReadLengths = [50, 75, 100]
-	
-	// take the index with the closest read length to the experiment's
-	def diffs = []
-	starIndexReadLengths.each() { length ->
-		diff = (length - read_length.toInteger()).abs()
-		diffs.add(diff)
-	}
-	def index = diffs.findIndexValues() { i -> i == diffs.min() }[0]
-	def rough_read_length = starIndexReadLengths[index.toInteger()]
-
-	return rough_read_length
-}
+include {
+	absolute_path;
+	addValue;
+	addFiles;
+	addIndex;
+	rrlen } from "./modules/methods.groovy"
 
 ///////////////////////////////////////////////////////////////////////////////
 //// PROCESSES ////////////////////////////////////////////////////////////////
@@ -146,19 +78,6 @@ include { multiqc } from "./modules/process/multiqc"
 ///////////////////////////////////////////////////////////////////////////////
 //// GENOME ///////////////////////////////////////////////////////////////////
 
-// genome
-//params.genome_version = params.genome_version.toString()
-//params.genome_release = params.genome_release.toString()
-
-//// annotation
-//fasta = params.genome.fasta
-//gtf = params.genome.gtf
-//bed = params.genome.bed
-//refflat = params.genome.refflat
-//rrna_list = params.genome.rrna_list
-//rrna_interval_list = params.genome.rrna_interval_list
-//rnaseqc_gtf = params.genome.rnaseqc_gtf
-
 // locations
 design_path = absolute_path( params.design )
 r_script_dir = absolute_path( "assets/scripts/r" )
@@ -166,18 +85,6 @@ multiqc_conf = absolute_path( "assets/multiqc/conf.yml" )
 
 ///////////////////////////////////////////////////////////////////////////////
 //// FASTQ ////////////////////////////////////////////////////////////////////
-
-///////////////////////////////////////////////////////////////////////////////
-//// a project is a set of fastq files with the same project ID
-//fastqs = []
-//fastq_dir = new File('examples/fastq/paired_end')
-//fastq_dir.eachFileRecurse(FILES) {
-//	if ( it.name.endsWith('.fastq.gz') ) {
-//		fastqs.add( new Fastq(it.getAbsolutePath(), "type", "homo sapiens") )
-//	}
-//}
-//project = new Project(fastqs)
-///////////////////////////////////////////////////////////////////////////////
 
 design = parseCsv( new File(params.design).readLines().join("\n") )
 
