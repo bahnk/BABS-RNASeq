@@ -3,10 +3,6 @@ Bootstrap: docker
 From: archlinux
 Stage: build
 
-%setup
-	touch /file1
-	touch ${SINGULARITY_ROOTFS}/file2
-
 %environment
 	
 	# PICARD
