@@ -23,7 +23,7 @@ process multiqc {
 		file transcript_integrity_number
 
 		// rnaseqc
-		//file rnaseqc
+		file rnaseqc
 
 		// pca
 		file pca_json

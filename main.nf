@@ -120,7 +120,8 @@ project = new Project(fastqs)
 
 // the sample channel
 samples = project.getSamples().collect{ it.getDict() }
-SAMPLES = Channel.from(samples[0..1])
+//SAMPLES = Channel.from(samples[0..1])
+SAMPLES = Channel.from(samples)
 
 workflow {
 
@@ -136,7 +137,10 @@ workflow {
 	read_length
 		.out
 		.map{ addValue(it[0], it[1], "read_length") }
-		.map{ addValue(it[0], rrlen(it[0]["read_length"]), "rough_read_length") }
+		.map{
+			addValue(it[0], rrlen(it[0]["read_length"]),
+			"rough_read_length")
+			}
 		.map{ [ it[0] , it[0]["fastq"] ] }
 		.set{ FASTQ }
 	
@@ -247,7 +251,7 @@ workflow {
 		mismatch_profile.out.collect{it[1]},
 		read_distribution.out.collect{it[1]},
 		transcript_integrity_number.out.collect{it[1]},
-		//rnaseqc.out.collect{it[1]},
+		rnaseqc.out.collect{it[1]},
 		pca_to_json.out,
 		multiqc_conf
 	)
