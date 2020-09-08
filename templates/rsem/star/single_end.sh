@@ -10,6 +10,6 @@ rsem-calculate-expression \
 	--star-output-genome-bam \
 	--star-gzipped-read-file \
 	--output-genome-bam \
-	$fastq1 \
+	$fastq \
 	$index \
 	$name
