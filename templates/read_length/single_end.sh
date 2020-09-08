@@ -14,6 +14,6 @@ then
 	echo "Problem: Read 1 and Read 2 doesn't have an unique length"
 	exit 1
 else
-	cat read_length_1.txt | tr "\n" ""
+	cat read_length_1.txt | tr -d "\\n"
 fi
 
