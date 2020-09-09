@@ -105,7 +105,7 @@ for ( line in design ) {
 	Fastq fastq = new Fastq(
 							row["file"],
 							row["sample"],
-							params.type,
+							row["type"],
 							params.species, 
 							row.subMap(experimental_factors)
 							)
@@ -129,7 +129,10 @@ workflow {
 	fastq_merge(SAMPLES)
 	fastq_merge	
 		.out
-		.map{ [ it[0] , it[1].sort() ] }
+		.map{[
+			it[0],
+			it[1] instanceof java.util.ArrayList ? it[1].sort() : it[1]
+		]}
 		.map{ addFiles(it[0], it[1], "fastq") }
 		.set{ MERGED_FASTQ }
 	
