@@ -5,15 +5,30 @@ Stage: build
 
 %environment
 	
-	# PICARD
 	export EBROOTPICARD=/opt/picard
-	
-	# RNASEQC
 	export EBROOTRNAMINSEQC=/opt/rnaseqc
+	export EBROOTTRIMMOMATIC=/opt/trimmomatic
 
 %post
 
-	pacman -Sy
+	export FASTQC_VERSION=0.11.8
+	export CUTADAPT_VERSION=2.10
+	export HTSLIB_VERSION=1.9
+	export SAMTOOLS_VERSION=1.9
+	export RSEM_VERSION=1.3.0
+	export STAR_VERSION=2.5.2a
+	export PICARD_VERSION=2.21.4
+	export RSEQC_VERSION=4.0.0
+	export RNASEQC_VERSION=1.1.8
+	export MULTIQC_VERSION=1.6
+	export CLUSTALW_VERSION=2.1
+	export TRIMMOMATIC_VERSION=0.39
+
+	export EBROOTPICARD=/opt/picard
+	export EBROOTRNAMINSEQC=/opt/rnaseqc
+	export EBROOTTRIMMOMATIC=/opt/trimmomatic
+
+	pacman -Syu --noconfirm
 
 	# required archlinux packages
 	pacman -S --noconfirm wget
@@ -73,9 +88,9 @@ Stage: build
 	echo "install FASTQC"
 	mkdir /opt/fastqc
 	wget \
-		https://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc_v0.11.8.zip \
-		-O /opt/fastqc/fastqc_v0.11.8.zip
-	unzip -d /opt/fastqc /opt/fastqc/fastqc_v0.11.8.zip
+		https://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc_v$FASTQC_VERSION.zip \
+		-O /opt/fastqc/fastqc_v$FASTQC_VERSION.zip
+	unzip -d /opt/fastqc /opt/fastqc/fastqc_v$FASTQC_VERSION.zip
 	chmod 755 /opt/fastqc/FastQC/fastqc
 	ln -s /opt/fastqc/FastQC/fastqc /usr/bin/fastqc
 
@@ -83,7 +98,7 @@ Stage: build
 	###                             CUTADAPT                                 ###
 	############################################################################
 	echo "install CUTADAPT"
-	pip install cutadapt
+	pip install cutadapt==$CUTADAPT_VERSION
 
 	############################################################################
 	###                               HTSLIB                                 ###
@@ -91,12 +106,12 @@ Stage: build
 	echo "install HTSLIB"
 	mkdir /opt/htslib
 	wget \
-		https://github.com/samtools/htslib/releases/download/1.9/htslib-1.9.tar.bz2 \
-		-O /opt/htslib/htslib-1.9.tar.bz2
+		https://github.com/samtools/htslib/releases/download/1.9/htslib-$HTSLIB_VERSION.tar.bz2 \
+		-O /opt/htslib/htslib-$HTSLIB_VERSION.tar.bz2
 	cd /opt/htslib
-	bzip2 --decompress htslib-1.9.tar.bz2
-	tar xvf htslib-1.9.tar
-	cd htslib-1.9
+	bzip2 --decompress htslib-$HTSLIB_VERSION.tar.bz2
+	tar xvf htslib-$HTSLIB_VERSION.tar
+	cd htslib-$HTSLIB_VERSION
 	./configure \
 		--prefix=/usr \
 		--enable-libcurl \
@@ -112,12 +127,12 @@ Stage: build
 	echo "install SAMTOOLS"
 	mkdir /opt/samtools
 	wget \
-		https://github.com/samtools/samtools/releases/download/1.9/samtools-1.9.tar.bz2 \
-		-O /opt/samtools/samtools-1.9.tar.bz2
+		https://github.com/samtools/samtools/releases/download/$SAMTOOLS_VERSION/samtools-$SAMTOOLS_VERSION.tar.bz2 \
+		-O /opt/samtools/samtools-$SAMTOOLS_VERSION.tar.bz2
 	cd /opt/samtools
-	bzip2 --decompress samtools-1.9.tar.bz2
-	tar xvf samtools-1.9.tar
-	cd samtools-1.9
+	bzip2 --decompress samtools-$SAMTOOLS_VERSION.tar.bz2
+	tar xvf samtools-$SAMTOOLS_VERSION.tar
+	cd samtools-$SAMTOOLS_VERSION
 	./configure --prefix=/usr --with-htslib=system
 	make
 	make install
@@ -129,11 +144,11 @@ Stage: build
 	echo "install STAR"
 	mkdir /opt/star
 	wget \
-		https://github.com/alexdobin/STAR/archive/2.5.2a.tar.gz \
-		-O /opt/star/STAR_v2.5.2a.tar.gz
-	tar zxvf /opt/star/STAR_v2.5.2a.tar.gz --directory /opt/star
-	chmod 755 /opt/star/STAR-2.5.2a/bin/Linux_x86_64/STAR
-	ln -s /opt/star/STAR-2.5.2a/bin/Linux_x86_64/STAR /usr/bin/STAR
+		https://github.com/alexdobin/STAR/archive/$STAR_VERSION.tar.gz \
+		-O /opt/star/STAR_v$STAR_VERSION.tar.gz
+	tar zxvf /opt/star/STAR_v$STAR_VERSION.tar.gz --directory /opt/star
+	chmod 755 /opt/star/STAR-$STAR_VERSION/bin/Linux_x86_64/STAR
+	ln -s /opt/star/STAR-$STAR_VERSION/bin/Linux_x86_64/STAR /usr/bin/STAR
 
 	############################################################################
 	###                               RSEM                                   ###
@@ -141,12 +156,12 @@ Stage: build
 	echo "install RSEM"
 	mkdir /opt/rsem
 	wget \
-		https://github.com/deweylab/rsem/archive/v1.3.0.tar.gz \
-		-O /opt/rsem/RSEM_v1.3.0.tar.gz
-	tar zxvf /opt/rsem/RSEM_v1.3.0.tar.gz --directory /opt/rsem
-	cd /opt/rsem/RSEM-1.3.0
+		https://github.com/deweylab/rsem/archive/v$RSEM_VERSION.tar.gz \
+		-O /opt/rsem/RSEM_v$RSEM_VERSION.tar.gz
+	tar zxvf /opt/rsem/RSEM_v$RSEM_VERSION.tar.gz --directory /opt/rsem
+	cd /opt/rsem/RSEM-$RSEM_VERSION
 	make
-   make install prefix="/opt/rsem"
+	make install prefix="/opt/rsem"
 	cp -Rv /opt/rsem/bin/* /usr/bin
 	cd /root
 
@@ -154,37 +169,63 @@ Stage: build
 	###                               PICARD                                 ###
 	############################################################################
 	echo "install PICARD"
-	mkdir /opt/picard
+	mkdir $EBROOTPICARD
 	wget \
-		https://github.com/broadinstitute/picard/releases/download/2.21.4/picard.jar \
-		-O /opt/picard/picard.jar
+		https://github.com/broadinstitute/picard/releases/download/$PICARD_VERSION/picard.jar \
+		-O $EBROOTPICARD/picard.jar
 
 	############################################################################
 	###                                RSEQC                                 ###
 	############################################################################
 	echo "install RSEQC"
-	pip install RSeQC
+	pip install RSeQC==$RSEQC_VERSION
 
 	############################################################################
 	###                              RNASEQC                                 ###
 	############################################################################
 	echo "install RNASEQC"
-	mkdir /opt/rnaseqc
+	mkdir $EBROOTRNAMINSEQC
 	wget \
-		http://www.broadinstitute.org/cancer/cga/tools/rnaseqc/RNA-SeQC_v1.1.8.jar \
-		-O /opt/rnaseqc/RNA-SeQC_v1.1.8.jar
+		http://www.broadinstitute.org/cancer/cga/tools/rnaseqc/RNA-SeQC_v$RNASEQC_VERSION.jar \
+		-O $EBROOTRNAMINSEQC/RNA-SeQC_v$RNASEQC_VERSION.jar
 
 	############################################################################
 	###                              MULTIQC                                 ###
 	############################################################################
 	echo "install MULTIQC"
-	pip install multiqc
+	pip install multiqc==$MULTIQC_VERSION
 	pip install git+git://github.com/bahnk/BABS-MultiQC-RNASeq
 
-%runscript
-	echo "Container was created $NOW"
-	echo "Arguments received: $*"
-	exec echo "$@"
+	############################################################################
+	####                             CLUSTALW                               ####
+	############################################################################
+	echo "install CLUSTALW"
+	mkdir /opt/clustalw
+	wget \
+		http://clustal.org/download/current/clustalw-$CLUSTALW_VERSION.tar.gz \
+		-O /opt/clustalw/clustalw-$CLUSTALW_VERSION.tar.gz
+	cd /opt/clustalw
+	tar zxvf clustalw-$CLUSTALW_VERSION.tar.gz
+	cd clustalw-$CLUSTALW_VERSION
+	./configure --prefix=/usr
+	make
+	make install
+	cd /root
+
+	############################################################################
+	####                           TRIMMOMATIC                              ####
+	############################################################################
+	echo "install TRIMMOMATIC"
+	mkdir $EBROOTTRIMMOMATIC
+	wget \
+		http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/Trimmomatic-$TRIMMOMATIC_VERSION.zip \
+		-O $EBROOTTRIMMOMATIC/Trimmomatic-$TRIMMOMATIC_VERSION.zip
+	cd $EBROOTTRIMMOMATIC
+	unzip Trimmomatic-$TRIMMOMATIC_VERSION.zip
+	echo -e '#!/usr/bin/sh' > /usr/bin/trimmomatic
+	echo -e 'exec java -jar '$EBROOTTRIMMOMATIC'/Trimmomatic-'$TRIMMOMATIC_VERSION'/trimmomatic-'$TRIMMOMATIC_VERSION'.jar "$@"' >> /usr/bin/trimmomatic
+	chmod 755 /usr/bin/trimmomatic
+	cd /root
 
 %labels
 	Author nourdine.bah@crick.ac.uk
