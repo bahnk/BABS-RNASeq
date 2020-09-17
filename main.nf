@@ -147,7 +147,6 @@ workflow {
 		.map{ [ it[0] , it[0]["fastq"] ] }
 		.set{ FASTQ }
 	
-	fastqc(FASTQ)
 
 	cutadapt(FASTQ)
 	cutadapt
@@ -155,6 +154,8 @@ workflow {
 		.fastq
 		.map{ addFiles(it[0], it[1], "cutadapt") }
 		.set{ CUTADAPT }
+
+	fastqc(CUTADAPT)
 
 	rsem(CUTADAPT)
 	rsem	
